@@ -1,6 +1,7 @@
 package com.trantienloi.laptopshop.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +19,10 @@ public class UserController {
             this.userService = userService;
         }
     @RequestMapping("/")
-    public String getHomePage() {
+    public String getHomePage(Model model) {
+        String test = this.userService.handldeHello();
+        model.addAttribute("TienLoi", test);
+        model.addAttribute("name", "Tran tien Loi");
         return "hello";
     }
     
