@@ -19,9 +19,9 @@
     hello from jsp
     <hr>
     <h1>
-        ${TienLoi}, ${name}
+        Create success
     </h1>
-    <button class="btn btn-success">submit</button>
+    <a href="/admin/user" class="btn btn-info">create</a>
     
 </body>
 </html>

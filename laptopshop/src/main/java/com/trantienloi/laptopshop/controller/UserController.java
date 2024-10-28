@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trantienloi.laptopshop.domain.User;
 import com.trantienloi.laptopshop.service.UserService;
 import org.springframework.web.bind.annotation.RequestMethod;
-
+import java.util.List;
 
 
 @Controller
@@ -21,6 +22,10 @@ public class UserController {
     @RequestMapping("/")
     public String getHomePage(Model model) {
         String test = this.userService.handldeHello();
+        List<User> lstUsers = userService.getAllUsers();
+        System.out.println(lstUsers);
+        List<User> lstUsersByEmail = userService.getUsersByEmail("Abc@gmail.com");
+        System.out.println(lstUsersByEmail);
         model.addAttribute("TienLoi", test);
         model.addAttribute("name", "Tran tien Loi");
         return "hello";
