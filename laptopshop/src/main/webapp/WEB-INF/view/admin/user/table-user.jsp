@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>List users</title>
+    <title>table users</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Latest compiled JavaScript -->
@@ -32,27 +32,18 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>
-                            <a href="/admin/user/view" class="btn btn-success">View</a>
-                            <a href="/admin/user/delete" class="btn btn-danger">Delete</a>
-                            <a href="/admin/user/update" class="btn btn-warning">update</a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>
-                            <a href="/admin/user/view" class="btn btn-success">View</a>
-                            <a href="/admin/user/delete" class="btn btn-danger">Delete</a>
-                            <a href="/admin/user/update" class="btn btn-warning">update</a>
-                        </td>
-                      </tr>
-                      
+                      <c:forEach var="user" items="${Model_users}">
+                          <tr>
+                              <td>${user.id}</td>
+                              <td>${user.email}</td>
+                              <td style="text-align: center">${user.fullname}</td>
+                              <td >
+                                  <button class="btn btn-success">View</button>
+                                  <button class="btn btn-warning">update</button>
+                                  <button class="btn btn-danger">Delete</button>
+                               </td>
+                          </tr>
+                      </c:forEach>
                     </tbody>
                   </table>
             </div>

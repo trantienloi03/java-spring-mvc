@@ -18,18 +18,18 @@ public class AdminControlller {
     }
     @RequestMapping("/admin/user")
     public String getUserPage(Model model) {
-        model.addAttribute("NewUser", new User());
+        List<User> lstUsers = userService.getAllUsers();
+        model.addAttribute("Model_users", lstUsers);
         return "admin/user/table-user";
     }
     @RequestMapping("/admin/user/create")
     public String CreateUser(Model model) {
         model.addAttribute("NewUser", new User());
-        return "admin/user/create";
+        return "admin/user/create"; // file
     }
     @RequestMapping(value = "/admin/user/create", method=RequestMethod.POST)
     public String Index(Model model, @ModelAttribute("NewUser") User TranTienLoi) {
-        System.out.println("Du lieu tu view la: "+TranTienLoi);
         userService.handleSaveUser(TranTienLoi);
-        return "hello";
+        return "redirect:/admin/user"; // trả lại url != file
     }
 }

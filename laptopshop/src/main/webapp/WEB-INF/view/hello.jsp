@@ -21,7 +21,7 @@
     <h1>
         Create success
     </h1>
-    <a href="/admin/user" class="btn btn-info">create</a>
+    <a href="/admin/user" class="btn btn-info">Users</a>
     
 </body>
 </html>
