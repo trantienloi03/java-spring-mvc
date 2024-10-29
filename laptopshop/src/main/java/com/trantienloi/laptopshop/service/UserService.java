@@ -17,7 +17,10 @@ public class UserService {
     }
     public User handleSaveUser(User trantienloi){
         User TienLoi = userRepository.save(trantienloi);
-        System.out.println(TienLoi);
+        return TienLoi;
+    }
+    public User getUserById(long id){
+        User TienLoi = userRepository.findById(id);
         return TienLoi;
     }
     public List<User> getAllUsers(){
