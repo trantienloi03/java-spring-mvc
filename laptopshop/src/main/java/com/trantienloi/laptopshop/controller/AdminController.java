@@ -2,13 +2,15 @@ package com.trantienloi.laptopshop.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import com.trantienloi.laptopshop.domain.User;
 import com.trantienloi.laptopshop.service.UserService;
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
 
 @Controller
 public class AdminController {
@@ -35,12 +37,8 @@ public class AdminController {
         model.addAttribute("currentUser",currentUser);
         return "admin/user/update";
     }
-    @RequestMapping("/admin/user/create")
-    public String CreateUser(Model model) {
-        model.addAttribute("NewUser", new User());
-        return "admin/user/create"; // file
-    }
-    @RequestMapping(value = "/admin/user/update", method=RequestMethod.POST)
+   
+    @PostMapping("/admin/user/update")
     public String update(Model model, @ModelAttribute("currentUser") User currentUser) {
         User currennt = userService.getUserById(currentUser.getId());
         if(currennt != null){
@@ -49,8 +47,28 @@ public class AdminController {
             currennt.setPhone(currentUser.getPhone());
             this.userService.handleSaveUser(currennt);
         }
-        userService.handleSaveUser(currentUser);
+        userService.handleSaveUser(currennt);
         return "redirect:/admin/user"; // trả lại url != file
+    }
+    @GetMapping("/admin/user/delete/{id}")
+    public String DeleteUser(Model model, @PathVariable long id) {
+        model.addAttribute("id", id);
+        User user = new User();
+        user.setId(id);
+        model.addAttribute("UserDelete", user);
+        return "admin/user/delete";
+    }
+    @PostMapping("/admin/user/delete")
+    public String PostDeleteUser(@ModelAttribute("UserDelete") User user) {
+        //TODO: process POST request
+        this.userService.DeleteUserByID(user.getId());
+        return  "redirect:/admin/user";
+    }
+    
+    @RequestMapping("/admin/user/create")
+    public String CreateUser(Model model) {
+        model.addAttribute("NewUser", new User());
+        return "admin/user/create"; // file
     }
     @RequestMapping(value = "/admin/user/create", method=RequestMethod.POST)
     public String Index(Model model, @ModelAttribute("NewUser") User TranTienLoi) {

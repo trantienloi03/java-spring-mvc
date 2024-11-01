@@ -27,6 +27,9 @@ public class UserService {
         List<User> lstUsers = userRepository.findAll();
         return lstUsers;
     }
+    public void DeleteUserByID(long id){
+        this.userRepository.deleteById(id);
+    }
     public List<User> getUsersByEmail(String email){
         List<User> lst = userRepository.findByEmail(email);
         return lst;
