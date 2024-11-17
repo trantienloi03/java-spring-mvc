@@ -1,1 +1,1 @@
-# java-spirng-mvc
+# java-spring-mvc
