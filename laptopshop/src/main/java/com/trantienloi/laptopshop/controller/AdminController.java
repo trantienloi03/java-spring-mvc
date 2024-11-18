@@ -54,6 +54,7 @@ public class AdminController {
     public String DeleteUser(Model model, @PathVariable long id) {
         model.addAttribute("id", id);
         User user = new User();
+        user = this.userService.getUserById(id);
         user.setId(id);
         model.addAttribute("UserDelete", user);
         return "admin/user/delete";

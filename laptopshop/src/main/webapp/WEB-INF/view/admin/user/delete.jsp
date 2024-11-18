@@ -32,15 +32,15 @@
                     </div>
                     <div class="mb-3">
                         <label for="fullName" class="form-label">Full name</label>
-                        <form:input type="text" path="fullname" class="form-control" disabled="true" />
+                        <form:input type="text" path="fullname" class="form-control"  />
                     </div>
                     <div class="mb-3">
                         <label for="address" class="form-label">Address</label>
-                        <form:input type="text" path="address" class="form-control" disabled="true"/>
+                        <form:input type="text" path="address" class="form-control" />
                     </div>
                     <div class="mb-3">
                         <label for="phone" class="form-label">Phone</label>
-                        <form:input type="text" path="phone" class="form-control" disabled="true"/>
+                        <form:input type="text" path="phone" class="form-control" />
                     </div>
                     <button type="submit" class="btn btn-danger">Confirm</button>
                 </form:form>
