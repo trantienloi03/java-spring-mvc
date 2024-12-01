@@ -11,6 +11,19 @@
         <meta name="author" content="" />
         <title>Create User - SB Admin</title>
         <link href="/css/styles.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+                <script>
+                    $(document).ready(() => {
+                        const avatarFile = $("#avatarFile");
+                        avatarFile.change(function (e) {
+                            const imgURL = URL.createObjectURL(e.target.files[0]);
+                            $("#avatarPreview").attr("src", imgURL);
+                            $("#avatarPreview").css({ "display": "block" });
+                        });
+                    });
+                </script>
+
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
@@ -29,29 +42,48 @@
                             <div class="row">
                                 <div class="col-md-6 col-12 mx-auto">
                                     <h2>Create a user</h2> <hr>
-                                    <form:form method="POST" action="/admin/user/create" modelAttribute="NewUser">
-                                        <div class="mb-3">
-                                            <label class="form-label">Email address</label>
-                                            <form:input type="email" path="email" class="form-control"/>
+                                    <form:form class="row" action="/admin/user/create" method="Post" enctype="multipart/form-data"
+                                              modelAttribute="NewUser">
+                                        <div class="mb-3 col-12 col-md-6">
+                                          <label for="inputEmail4" class="form-label">Email</label>
+                                          <form:input type="email" path="email" class="form-control" id="inputEmail4"/>
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Password</label>
-                                            <form:input type="password" path="password" class="form-control" />
+                                        <div class="mb-3 col-12 col-md-6">
+                                          <label for="inputPassword4" class="form-label">Password</label>
+                                          <form:input type="password" path="password" class="form-control" id="inputPassword4"/>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="fullName" class="form-label">Full name</label>
-                                            <form:input type="text" path="fullname" class="form-control" />
+                                        <div class="mb-3 col-12 col-md-6">
+                                          <label for="phoneNumber" class="form-label">Phone number</label>
+                                          <form:input type="text" path="phone" class="form-control" id="phoneNumber" placeholder="phone"/>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="address" class="form-label">Address</label>
-                                            <form:input type="text" path="address" class="form-control" />
+                                        <div class="mb-3 col-12 col-md-6">
+                                          <label for="fullname" class="form-label">Full name</label>
+                                          <form:input type="text" path="fullname" class="form-control" id="fullname" placeholder="Full name"/>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="phone" class="form-label">Phone</label>
-                                            <form:input type="text" path="phone" class="form-control"/>
+                                        <div class="mb-3 col-12">
+                                          <label for="address" class="form-label">Address</label>
+                                          <form:input type="text" path="address" class="form-control" id="address"/>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </form:form>
+                                        <div class="mb-3 col-12 col-md-6">
+                                          <label for="role" class="form-label">Role</label>
+                                          <form:select id="role" class="form-select" path="role.name">
+                                            <form:option value="ADMIN">ADMIN</form:option>
+                                            <form:option value="USER">USER</form:option>
+                                          </form:select>
+                                        </div>
+                                        <div class="mb-3 col-12 col-md-6">
+                                            <label for="avatarFile" class="form-label">Avatar</label>
+                                            <input class="form-control" type="file" id="avatarFile" 
+                                                    accept=".png, .jpg, .jpeg" name="trantienloiFile"/>
+                                        </div>
+                                        <div class="mb-3 col-12">
+                                           <img style="max-height: 250px; display: none;" alt="avatar preview"
+                                                id="avatarPreview">
+                                        </div>
+                                        <div class="col-12 mb-5">
+                                          <button type="submit" class="btn btn-primary">Create</button>
+                                        </div>
+                                      </form:form>
                                 </div>
                             </div>
                             
