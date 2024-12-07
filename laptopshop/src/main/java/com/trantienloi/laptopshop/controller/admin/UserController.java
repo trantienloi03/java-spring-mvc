@@ -4,6 +4,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.trantienloi.laptopshop.domain.User;
 import com.trantienloi.laptopshop.service.UploadFileService;
 import com.trantienloi.laptopshop.service.UserService;
+
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -75,7 +79,6 @@ public class UserController {
             currennt.setRole(this.userService.getRoleByName(currentUser.getRole().getName()));
             this.userService.handleSaveUser(currennt);
         }
-        userService.handleSaveUser(currennt);
         return "redirect:/admin/user"; // trả lại url != file
     }
     @GetMapping("/admin/user/delete/{id}")
@@ -101,10 +104,17 @@ public class UserController {
     }
     @PostMapping("/admin/user/create")
     public String createUserPage(Model model, 
-                                @ModelAttribute("NewUser") User TranTienLoi,
+                                @Valid @ModelAttribute("NewUser") User TranTienLoi,
+                                BindingResult newUSerBindingResult,
                                 @RequestParam("trantienloiFile") MultipartFile file) 
     {
-                                     
+         List<FieldError> errors = newUSerBindingResult.getFieldErrors();     
+         for (FieldError fieldError : errors) {
+            System.out.println(">>>>>>>>" + fieldError.getField()+", "+ fieldError.getDefaultMessage());
+         }       
+         if(newUSerBindingResult.hasErrors()){
+            return "admin/user/create";
+         }          
             
         String avatar = this.uploadFileService.handleSaveUploadFile(file, "avatar");
         String hashPassword = this.passwordEncoder.encode(TranTienLoi.getPassword());
