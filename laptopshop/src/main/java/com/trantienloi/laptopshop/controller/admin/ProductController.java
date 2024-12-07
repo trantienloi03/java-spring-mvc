@@ -70,6 +70,54 @@ public class ProductController {
         this.productService.saveProduct(newProduct);
         return "redirect:/admin/product";
     }
+    @GetMapping("/admin/product/detele/{id}")
+    public String getDeletePage(Model model, @PathVariable long id) {
+        model.addAttribute("id", id);
+        model.addAttribute("infoProduct", new Product());
+        return "admin/product/delete";
+    }
+    @PostMapping("/admin/product/delete")
+    public String postDeleteProduct(Model model, @ModelAttribute("infoProduct") Product infoProduct) {
+        this.productService.deleteProductByID(infoProduct.getId()); 
+        return "redirect:/admin/product";
+    }
+
+    @GetMapping("/admin/product/update/{id}")
+    public String getUpdateProduct(Model model, @PathVariable long id) {
+        Product updateProduct = this.productService.getProductById(id);
+        model.addAttribute("updateProduct", updateProduct);
+        return "admin/product/update";
+    }
+    @PostMapping("/admin/product/update")
+    public String postUpdateProduct(@Valid @ModelAttribute("updateProduct") Product updateProduct,
+                                    BindingResult updateProducBindingResult,
+                                    @RequestParam("trantienloiFile") MultipartFile file) {
+
+        if(updateProducBindingResult.hasErrors()){
+            return "admin/product/update";
+        }
+        Product currentProduct = this.productService.getProductById(updateProduct.getId());
+        if(currentProduct != null){
+            if(file.isEmpty() == false){
+                String img = this.uploadFileService.handleSaveUploadFile(file, "product");
+                currentProduct.setImage(img);
+            }
+            currentProduct.setName(updateProduct.getName());
+            currentProduct.setPrice(updateProduct.getPrice());
+            currentProduct.setQuantity(updateProduct.getQuantity());
+            currentProduct.setDetailDesc(updateProduct.getDetailDesc());
+            currentProduct.setShortDesc(updateProduct.getShortDesc());
+            currentProduct.setFactory(updateProduct.getFactory());
+            currentProduct.setTarget(updateProduct.getTarget());
+
+            this.productService.saveProduct(currentProduct);
+        }
+        return "redirect:/admin/product";
+    }
+    
+    
+    
+    
     
     
     

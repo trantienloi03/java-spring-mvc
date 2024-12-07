@@ -32,18 +32,19 @@
                                         <h3 >product detail with id  = ${product.id}</h3>
                                     </div>
                                     <hr>
+                                    <img style="height: 450Px; width: 450px;" class="card-img-top" src="/images/product/${product.image}" alt="">
                                     <div class="card" style="width: 60%;">
                                         <div class="card-header">
-                                          product information
+                                          <b>product information</b>
                                         </div>
                                         <ul class="list-group list-group-flush">
-                                          <li class="list-group-item">ID: ${product.id}</li>
-                                          <li class="list-group-item">Full name: ${product.name}</li>
-                                          <li class="list-group-item">Email: ${product.price}</li>
-                                          <li class="list-group-item">Phone number: ${product.detailDesc}</li>
-                                          <li class="list-group-item">Address: ${product.shortDesc}</li>
-                                          <li class="list-group-item">Address: ${product.factory}</li>
-                                          <li class="list-group-item">Address: ${product.target}</li>
+                                          <li class="list-group-item"><b>ID:</b> ${product.id}</li>
+                                          <li class="list-group-item"><b>Name:</b> ${product.name}</li>
+                                          <li class="list-group-item"><b>Price</b> ${product.price}</li>
+                                          <li class="list-group-item"><b>Detail description:</b> ${product.detailDesc}</li>
+                                          <li class="list-group-item"><b>Short description:</b> ${product.shortDesc}</li>
+                                          <li class="list-group-item"><b>Factory:</b> ${product.factory}</li>
+                                          <li class="list-group-item"><b>Target:</b> ${product.target}</li>
                                         </ul>
                                       </div>
                                       <a class="btn btn-success mt-2" href="/admin/product">back</a>

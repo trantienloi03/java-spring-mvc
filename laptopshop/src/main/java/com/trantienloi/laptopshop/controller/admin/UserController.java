@@ -92,7 +92,6 @@ public class UserController {
     }
     @PostMapping("/admin/user/delete")
     public String PostDeleteUser(@ModelAttribute("UserDelete") User user) {
-        //TODO: process POST request
         this.userService.DeleteUserByID(user.getId());
         return  "redirect:/admin/user";
     }
