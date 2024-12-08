@@ -16,6 +16,8 @@ import jakarta.validation.constraints.Size;
 
 import java.util.*;
 
+import com.trantienloi.laptopshop.domain.validator.StrongPassword;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -30,6 +32,7 @@ public class User {
 
     @NotNull
     @Size(min = 3, message = "Mật khẩu phải có tối thiểu 2 kí tự")
+    @StrongPassword(message = "Mật khẩu chưa đủ mạnh!")
     private String password;
     @NotNull
     @Size(min = 10, message = "Tên tài khoản phải có tối thiểu 10 kí tự")
