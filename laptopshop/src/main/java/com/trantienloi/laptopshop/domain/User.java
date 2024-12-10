@@ -32,10 +32,9 @@ public class User {
 
     @NotNull
     @Size(min = 3, message = "Mật khẩu phải có tối thiểu 2 kí tự")
-    @StrongPassword(message = "Mật khẩu chưa đủ mạnh!")
     private String password;
     @NotNull
-    @Size(min = 10, message = "Tên tài khoản phải có tối thiểu 10 kí tự")
+    @Size(min = 3, message = "Tên tài khoản phải có tối thiểu 3 kí tự")
     private String fullname;
     private String address;
     private String phone;

@@ -18,29 +18,29 @@ public class RegisterValidator implements ConstraintValidator<RegisterChecked, r
     public boolean isValid(registerUser user, ConstraintValidatorContext context) {
         boolean valid = true;
         //check firstName
-        if (user.getFirstName().length() == 0) {
-            context.buildConstraintViolationWithTemplate("Vuii lòng nhập first name")
-                    .addPropertyNode("firstName")
-                    .addConstraintViolation()
-                    .disableDefaultConstraintViolation();
-            valid = false;
-        }
+        // if (user.getFirstName().length() == 0) {
+        //     context.buildConstraintViolationWithTemplate("Vui lòng nhập first name")
+        //             .addPropertyNode("firstName")
+        //             .addConstraintViolation()
+        //             .disableDefaultConstraintViolation();
+        //     valid = false;
+        // }
          //check lastName
-         if (user.getLastName().length() == 0) {
-            context.buildConstraintViolationWithTemplate("Vui lòng nhập last name")
-                    .addPropertyNode("lastName")
-                    .addConstraintViolation()
-                    .disableDefaultConstraintViolation();
-            valid = false;
-        }
+        //  if (user.getLastName().length() == 0) {
+        //     context.buildConstraintViolationWithTemplate("Vui lòng nhập last name")
+        //             .addPropertyNode("lastName")
+        //             .addConstraintViolation()
+        //             .disableDefaultConstraintViolation();
+        //     valid = false;
+        //}
         //check lastName
-        if (user.getEmail().length() == 0) {
-            context.buildConstraintViolationWithTemplate("Vui lòng nhập Emaiil")
-                    .addPropertyNode("email")
-                    .addConstraintViolation()
-                    .disableDefaultConstraintViolation();
-            valid = false;
-        }
+        // if (user.getEmail().length() == 0) {
+        //     context.buildConstraintViolationWithTemplate("Vui lòng nhập Email")
+        //             .addPropertyNode("email")
+        //             .addConstraintViolation()
+        //             .disableDefaultConstraintViolation();
+        //     valid = false;
+        // }
         // Check if password fields match
         if (!user.getPassword().equals(user.getConfirmPassword())) {
             context.buildConstraintViolationWithTemplate("Nhập lại mật khẩu không chính xác")

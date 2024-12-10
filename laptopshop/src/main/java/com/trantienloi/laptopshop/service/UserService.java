@@ -36,7 +36,7 @@ public class UserService {
         this.userRepository.deleteById(id);
     }
     public List<User> getUsersByEmail(String email){
-        List<User> lst = userRepository.findByEmail(email);
+        List<User> lst = userRepository.findOneByEmail(email);
         return lst;
     }
     public Role getRoleByName (String name){
@@ -53,5 +53,8 @@ public class UserService {
     }
     public boolean checkExistEmail(String email){
         return this.userRepository.existsByEmail(email);
+    }
+    public User getUserByEmail(String email){
+        return this.userRepository.findByEmail(email);
     }
 }

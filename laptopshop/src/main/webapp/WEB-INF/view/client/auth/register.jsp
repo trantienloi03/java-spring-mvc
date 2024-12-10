@@ -37,6 +37,9 @@
                                             <c:set var="confirmPasswordHasError">
                                                 <form:errors path="confirmPassword" cssClass="invalid-feedback" />
                                             </c:set>
+                                            <c:set var="passwordHasError">
+                                                <form:errors path="password" cssClass="invalid-feedback" />
+                                            </c:set>
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <div class="form-floating mb-3 mb-md-0">
@@ -61,8 +64,9 @@
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <div class="form-floating mb-3 mb-md-0">
-                                                        <form:input class="form-control" id="inputPassword" path="password" type="password" placeholder="Create a password" />
+                                                        <form:input class="form-control ${not empty passwordHasError ? 'is-invalid': ''}" id="inputPassword" path="password" type="password" placeholder="Create a password" />
                                                         <label for="inputPassword">Password</label>
+                                                        ${passwordHasError}
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -79,7 +83,7 @@
                                         </form:form>
                                     </div>
                                     <div class="card-footer text-center py-3">
-                                        <div class="small"><a href="login.html">Have an account? Go to login</a></div>
+                                        <div class="small"><a href="/login">Have an account? Go to login</a></div>
                                     </div>
                                 </div>
                             </div>
