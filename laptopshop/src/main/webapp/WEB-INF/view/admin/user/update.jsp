@@ -16,10 +16,16 @@
         <script>
             $(document).ready(() => {
                 const avatarFile = $("#avatarFile");
+                const orgImage = "${currentUser.avatar}";
+                        if (orgImage) {
+                            const urlImage = "/images/avatar/" + orgImage;
+                            $("#avatarPreview").attr("src", urlImage);
+                            $("#avatarPreview").css({ "display": "block" });
+                        }
                 avatarFile.change(function (e) {
                     const imgURL = URL.createObjectURL(e.target.files[0]);
                     $("#avatarPreview").attr("src", imgURL);
-                    $("#avatarPreview").css({ "display": "block" });
+                    $("#avatarPreview").css({ "display": "block" })
                 });
             });
         </script>
@@ -46,13 +52,9 @@
                                             <label class="form-label">ID</label>
                                             <form:input type="text" path="id" class="form-control" />
                                         </div>
-                                        <div class="mb-3 col-12 col-md-6">
+                                        <div class="mb-3 col-12">
                                             <label for="inputEmail4" class="form-label">Email</label>
                                             <form:input type="email" path="email" class="form-control" disabled="true" id="inputEmail4"/>
-                                          </div>
-                                          <div class="mb-3 col-12 col-md-6">
-                                            <label for="inputPassword4" class="form-label">Password</label>
-                                            <form:input type="password" path="password" class="form-control" id="inputPassword4"/>
                                           </div>
                                           <div class="mb-3 col-12 col-md-6">
                                             <label for="phoneNumber" class="form-label">Phone number</label>

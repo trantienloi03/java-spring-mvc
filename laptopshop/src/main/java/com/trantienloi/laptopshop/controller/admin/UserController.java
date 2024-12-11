@@ -67,17 +67,17 @@ public class UserController {
    
     @PostMapping("/admin/user/update")
     public String update(Model model, @ModelAttribute("currentUser") User currentUser,@RequestParam("trantienloiFile") MultipartFile file) {
-        User currennt = userService.getUserById(currentUser.getId());
-        if(currennt != null){
-            currennt.setFullname(currentUser.getFullname());
-            String hashCode = this.passwordEncoder.encode(currentUser.getPassword());
-            currennt.setPassword(hashCode);
-            currennt.setAddress(currentUser.getAddress());
-            currennt.setPhone(currentUser.getPhone());
-            String avatar = this.uploadFileService.handleSaveUploadFile(file, "avatar");
-            currennt.setAvatar(avatar);
-            currennt.setRole(this.userService.getRoleByName(currentUser.getRole().getName()));
-            this.userService.handleSaveUser(currennt);
+        User current = userService.getUserById(currentUser.getId());
+        if(current != null){
+            if(file.isEmpty() == false){
+                String img = this.uploadFileService.handleSaveUploadFile(file, "avatar");
+                current.setAvatar(img);
+            }
+            current.setFullname(currentUser.getFullname());
+            current.setAddress(currentUser.getAddress());
+            current.setPhone(currentUser.getPhone());
+            current.setRole(this.userService.getRoleByName(currentUser.getRole().getName()));
+            this.userService.handleSaveUser(current);
         }
         return "redirect:/admin/user"; // trả lại url != file
     }
