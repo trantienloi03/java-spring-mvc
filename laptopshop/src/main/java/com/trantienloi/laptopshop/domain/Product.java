@@ -47,6 +47,7 @@ public class Product {
     private long sold;
     private String factory;
     private String target;
+
     public long getId() {
         return id;
     }
