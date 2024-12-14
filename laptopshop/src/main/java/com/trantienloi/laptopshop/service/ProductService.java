@@ -42,6 +42,10 @@ public class ProductService {
          productRepository.deleteById(id);
     }
 
+    //Lay gio hang theo nguoi dung
+    public Cart fetchByUser(User user){
+        return this.cartRepository.findByUser(user);
+    }
     // Thêm từ trang home không phải từ detail
     public void handleAddProductToCart(long id, String email, HttpSession session){
         User user = this.userService.getUserByEmail(email);
