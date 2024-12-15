@@ -2,6 +2,7 @@ package com.trantienloi.laptopshop.controller.client;
 
 
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +44,14 @@ public class ItemController {
         this.productService.handleAddProductToCart(product_id, email, session);        
         return "redirect:/";
     }
+    @PostMapping("/delete-cart-product/{id}")
+    public String postDeleteItem(@PathVariable long id, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        long cart_detail_id = id;
+        
+        this.productService.handleDeleteCartProduct(cart_detail_id, session);        
+        return "redirect:/cart";
+    }
     @GetMapping("/cart")
     public String getCartPage(Model model, HttpServletRequest request) {
         User user = new User();
@@ -50,7 +59,7 @@ public class ItemController {
         long id = (long) session.getAttribute("id");
         user.setId(id);
         Cart cart = this.productService.fetchByUser(user);
-        List<CartDetail> cartDetails = cart.getCartDetail();
+        List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetail();
         long total_price = 0;
         for (CartDetail cartDetail : cartDetails) {
             total_price += cartDetail.getPrice() * cartDetail.getQuantity();
