@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
@@ -59,19 +59,23 @@ public class ItemController {
     }
     @GetMapping("/cart")
     public String getCartPage(Model model, HttpServletRequest request) {
-        User user = new User();
-        HttpSession session = request.getSession(false); 
+        User currentUser = new User();// null
+        HttpSession session = request.getSession(false);
         long id = (long) session.getAttribute("id");
-        user.setId(id);
-        Cart cart = this.productService.fetchByUser(user);
-        List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetail();
-        long total_price = 0;
-        for (CartDetail cartDetail : cartDetails) {
-            total_price += cartDetail.getPrice() * cartDetail.getQuantity();
+        currentUser.setId(id);
+
+        Cart cart = this.productService.fetchByUser(currentUser);
+        List<CartDetail> cartDetails = (cart == null) ? new ArrayList<CartDetail>() : cart.getCartDetails();
+
+        double totalPrice = 0;
+        for (CartDetail cd : cartDetails) {
+            totalPrice += cd.getPrice() * cd.getQuantity();
         }
         model.addAttribute("cartDetails", cartDetails);
-        model.addAttribute("totalPrice", total_price);
+        model.addAttribute("totalPrice", totalPrice);
+
         model.addAttribute("cart", cart);
+
         return "client/cart/show";
     }
     @GetMapping("/checkout")
@@ -81,7 +85,7 @@ public class ItemController {
         long id = (Long)session.getAttribute("id");
         user.setId(id);
         Cart cart = this.productService.fetchByUser(user);
-        List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetail();
+        List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetails();
         double price = 0;
         for (CartDetail cartDetail : cartDetails) {
             price+= cartDetail.getPrice()*cartDetail.getQuantity();
@@ -91,10 +95,13 @@ public class ItemController {
         return "client/cart/checkout";
     }
     @PostMapping("/confirm-checkout")
-    public String getCheckoutPage(@ModelAttribute("cart") Cart cart) {
-        List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetail();
-        this.productService.handleUpdateCartBeforeCheckOut(cartDetails);
-        
+    public String getCheckOutPage(@ModelAttribute("cart") Cart cart) {
+        List<CartDetail> cartDetails = (cart == null) ? new ArrayList<CartDetail>() : cart.getCartDetails();
+        if(cartDetails == null){
+            System.out.println("-----------------------------------DS rong");
+        }
+        System.out.println("cart: "+cart);
+        this.productService.handleUpdateCartBeforeCheckout(cartDetails);
         return "redirect:/checkout";
     }
     @PostMapping("/place-order")

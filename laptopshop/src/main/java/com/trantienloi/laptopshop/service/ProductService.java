@@ -102,7 +102,7 @@ public class ProductService {
         }
 
     }
-    public void handleUpdateCartBeforeCheckOut(List<CartDetail> cartDetails){
+    public void handleUpdateCartBeforeCheckout(List<CartDetail> cartDetails){
        for (CartDetail cartDetail : cartDetails) {
         Optional<CartDetail> cdOptional = this.cartDetailRepository.findById(cartDetail.getId());
         if (cdOptional.isPresent()) {

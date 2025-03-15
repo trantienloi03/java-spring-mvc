@@ -65,6 +65,19 @@ public class Order {
     public void setStatus(String status) {
         this.status = status;
     }
+    
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
+    }
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
     @Override
     public String toString() {
         return "Order [id=" + id + ", totalPrice=" + totalPrice + "]";
