@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.trantienloi.laptopshop.domain.Cart;
@@ -19,6 +20,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
 
 
 
@@ -66,8 +71,44 @@ public class ItemController {
         }
         model.addAttribute("cartDetails", cartDetails);
         model.addAttribute("totalPrice", total_price);
+        model.addAttribute("cart", cart);
         return "client/cart/show";
     }
+    @GetMapping("/checkout")
+    public String getCheckPage(Model model,HttpServletRequest request) {
+        User user = new User();
+        HttpSession session = request.getSession(false);
+        long id = (Long)session.getAttribute("id");
+        user.setId(id);
+        Cart cart = this.productService.fetchByUser(user);
+        List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetail();
+        double price = 0;
+        for (CartDetail cartDetail : cartDetails) {
+            price+= cartDetail.getPrice()*cartDetail.getQuantity();
+        }
+        model.addAttribute("cartDetails", cartDetails);
+        model.addAttribute("totalPrice", price);
+        return "client/cart/checkout";
+    }
+    @PostMapping("/confirm-checkout")
+    public String getCheckoutPage(@ModelAttribute("cart") Cart cart) {
+        List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetail();
+        this.productService.handleUpdateCartBeforeCheckOut(cartDetails);
+        
+        return "redirect:/checkout";
+    }
+    @PostMapping("/place-order")
+    public String handlePlaceOrder(HttpServletRequest request,
+                                    @RequestParam("receiverName") String receiverName,
+                                    @RequestParam("receiverAddress") String receiverAddress,
+                                    @RequestParam("receiverPhone") String receiverPhone) {
+            HttpSession session = request.getSession(false);
+        
+        return "";
+    }
+    
+    
+    
     
     
 }
