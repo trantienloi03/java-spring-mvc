@@ -1,5 +1,8 @@
 package com.trantienloi.laptopshop.controller.admin;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +20,6 @@ import com.trantienloi.laptopshop.service.UploadFileService;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -33,12 +35,13 @@ public class ProductController {
         this.uploadFileService = uploadFileService;
     }
     @GetMapping("/admin/product")
-    public String getProductPage(Model model) {
-        List<Product> lstProducts = this.productService.getAllProducts();
-        for (Product product : lstProducts) {
-            System.out.println(product.toString());
-        }
-        model.addAttribute("lstProducts", lstProducts);
+    public String getProductPage(Model model, @RequestParam("page") int page) {
+        Pageable pageable = PageRequest.of(page-1, 4);
+        Page<Product> lstProducts = this.productService.getAllProducts(pageable);
+        List<Product> lst = lstProducts.getContent();
+        model.addAttribute("lstProducts", lst);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", lstProducts.getTotalPages());
         return "admin/product/show";
     }
     @GetMapping("/admin/product/{id}")

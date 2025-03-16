@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import com.trantienloi.laptopshop.domain.Order;
 import com.trantienloi.laptopshop.domain.OrderDetail;
+import com.trantienloi.laptopshop.domain.User;
 import com.trantienloi.laptopshop.repository.OrderDetailRepository;
 import com.trantienloi.laptopshop.repository.OrderRepository;
 @Service
@@ -48,5 +49,8 @@ public class OrderService {
             currentOrder.setStatus(order.getStatus());
             this.orderRepository.save(currentOrder);
         }
+    }
+    public List<Order> fetchOrderByUser(User user){
+        return this.orderRepository.findByUser(user);
     }
 }

@@ -3,6 +3,8 @@ package com.trantienloi.laptopshop.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.trantienloi.laptopshop.domain.Cart;
@@ -43,8 +45,8 @@ public class ProductService {
     public Product saveProduct(Product product){
         return productRepository.save(product);
     }
-    public List<Product> getAllProducts(){
-        return this.productRepository.findAll();
+    public Page<Product> getAllProducts(Pageable pageable){
+        return this.productRepository.findAll(pageable);
     }
     public Product getProductById(long id){
         return productRepository.findById(id);
@@ -58,7 +60,7 @@ public class ProductService {
         return this.cartRepository.findByUser(user);
     }
     // Thêm từ trang home không phải từ detail
-    public void handleAddProductToCart(long id, String email, HttpSession session){
+    public void handleAddProductToCart(long id, String email, HttpSession session, long quantity){
         User user = this.userService.getUserByEmail(email);
         if(user != null){
             Cart cart = this.cartRepository.findByUser(user);  // check xem da co gio hang chua
@@ -77,7 +79,7 @@ public class ProductService {
                     cd.setCart(cart);  //luu cart_id cho cartdetail
                     cd.setProduct(productOptional);
                     cd.setPrice(productOptional.getPrice());
-                    cd.setQuantity(1);
+                    cd.setQuantity(quantity);
                     this.cartDetailRepository.save(cd);
 
                     //Luu lai sum cho cart
@@ -87,7 +89,7 @@ public class ProductService {
                     session.setAttribute("sum", s);
 
                 }else{
-                    oldDetail.setQuantity(oldDetail.getQuantity()+1);
+                    oldDetail.setQuantity(oldDetail.getQuantity()+quantity);
                     this.cartDetailRepository.save(oldDetail);
                 }
             }
