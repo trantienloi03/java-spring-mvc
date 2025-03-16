@@ -97,10 +97,6 @@ public class ItemController {
     @PostMapping("/confirm-checkout")
     public String getCheckOutPage(@ModelAttribute("cart") Cart cart) {
         List<CartDetail> cartDetails = (cart == null) ? new ArrayList<CartDetail>() : cart.getCartDetails();
-        if(cartDetails == null){
-            System.out.println("-----------------------------------DS rong");
-        }
-        System.out.println("cart: "+cart);
         this.productService.handleUpdateCartBeforeCheckout(cartDetails);
         return "redirect:/checkout";
     }
@@ -110,12 +106,15 @@ public class ItemController {
                                     @RequestParam("receiverAddress") String receiverAddress,
                                     @RequestParam("receiverPhone") String receiverPhone) {
             HttpSession session = request.getSession(false);
-        
-        return "";
+            User user = new User();
+            long id = (Long)session.getAttribute("id");
+            user.setId(id);
+            this.productService.handlePlaceOrder(user, session, receiverName, receiverAddress, receiverPhone);
+        return "redirect:/thanks";
+                                    }
+    @GetMapping("/thanks")
+    public String thanks(){
+        return "client/cart/thanks";
     }
-    
-    
-    
-    
-    
 }
+    
