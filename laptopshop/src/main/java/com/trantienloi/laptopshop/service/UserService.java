@@ -1,10 +1,13 @@
 package com.trantienloi.laptopshop.service;
 
+import org.eclipse.tags.shaded.org.apache.regexp.recompile;
 import org.springframework.stereotype.Service;
 
 import com.trantienloi.laptopshop.domain.Role;
 import com.trantienloi.laptopshop.domain.User;
 import com.trantienloi.laptopshop.domain.dto.registerUser;
+import com.trantienloi.laptopshop.repository.OrderRepository;
+import com.trantienloi.laptopshop.repository.ProductRepository;
 import com.trantienloi.laptopshop.repository.RoleRepository;
 import com.trantienloi.laptopshop.repository.UserRepository;
 import java.util.List;
@@ -12,10 +15,17 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
     private final RoleRepository roleRepository;
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository, 
+                        RoleRepository roleRepository,
+                        OrderRepository orderRepository,
+                        ProductRepository productRepository ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.orderRepository = orderRepository;
+        this.productRepository = productRepository;
     }
     public String handldeHello(){
         return "helllo from controller";
@@ -56,5 +66,14 @@ public class UserService {
     }
     public User getUserByEmail(String email){
         return this.userRepository.findByEmail(email);
+    }
+    public long countUser(){
+        return this.userRepository.count();
+    }
+    public long countProducts(){
+        return this.productRepository.count();
+    }
+    public long countOrders(){
+        return this.orderRepository.count();
     }
 }
