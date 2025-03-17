@@ -1,6 +1,8 @@
 package com.trantienloi.laptopshop.service;
 
 import org.eclipse.tags.shaded.org.apache.regexp.recompile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.trantienloi.laptopshop.domain.Role;
@@ -38,8 +40,8 @@ public class UserService {
         User TienLoi = userRepository.findById(id);
         return TienLoi;
     }
-    public List<User> getAllUsers(){
-        List<User> lstUsers = userRepository.findAll();
+    public Page<User> getAllUsers(Pageable pageable){
+        Page<User> lstUsers = userRepository.findAll(pageable);
         return lstUsers;
     }
     public void DeleteUserByID(long id){

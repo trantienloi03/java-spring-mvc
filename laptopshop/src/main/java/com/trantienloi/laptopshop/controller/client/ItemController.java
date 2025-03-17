@@ -2,8 +2,12 @@ package com.trantienloi.laptopshop.controller.client;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.ArrayList;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +44,24 @@ public class ItemController {
          Product product = this.productService.getProductById(id);
         model.addAttribute("product", product);
         return "client/product/detail";
+    }
+    @GetMapping("/products")
+    public String getPoducts(Model model ,@RequestParam("page") Optional<String> OptionalPage) {
+        int page = 1;
+        try {
+            if(OptionalPage.isPresent()){
+                page = Integer.parseInt(OptionalPage.get());
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        Pageable pageable = PageRequest.of(page-1, 6);
+        Page<Product> lstProducts = this.productService.getAllProducts(pageable);
+        List<Product> product = lstProducts.getContent();
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", lstProducts.getTotalPages());
+        model.addAttribute("products", product);
+        return "client/product/show";
     }
     @PostMapping("/add-product-to-cart/{id}")
     public String postMethodName(@PathVariable long id, HttpServletRequest request) {

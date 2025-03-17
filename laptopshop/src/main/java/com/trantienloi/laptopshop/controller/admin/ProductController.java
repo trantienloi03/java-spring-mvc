@@ -22,6 +22,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 
 
@@ -35,7 +36,15 @@ public class ProductController {
         this.uploadFileService = uploadFileService;
     }
     @GetMapping("/admin/product")
-    public String getProductPage(Model model, @RequestParam("page") int page) {
+    public String getProductPage(Model model, @RequestParam("page") Optional<String> OptionalPage) {
+        int page = 1;
+        try {
+            if(OptionalPage.isPresent()){
+                page = Integer.parseInt(OptionalPage.get());
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
         Pageable pageable = PageRequest.of(page-1, 4);
         Page<Product> lstProducts = this.productService.getAllProducts(pageable);
         List<Product> lst = lstProducts.getContent();

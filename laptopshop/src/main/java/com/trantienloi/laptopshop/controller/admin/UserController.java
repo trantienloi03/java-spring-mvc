@@ -1,5 +1,8 @@
 package com.trantienloi.laptopshop.controller.admin;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -22,6 +25,7 @@ import com.trantienloi.laptopshop.service.UserService;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Controller
@@ -38,7 +42,8 @@ public class UserController {
     @RequestMapping("/")
     public String getHomePage(Model model) {
         String test = this.userService.handldeHello();
-        List<User> lstUsers = userService.getAllUsers();
+        Pageable pageable = PageRequest.of(0, 4);
+        Page<User> lstUsers = userService.getAllUsers(pageable);
         System.out.println(lstUsers);
         List<User> lstUsersByEmail = userService.getUsersByEmail("Abc@gmail.com");
         System.out.println(lstUsersByEmail);
@@ -47,9 +52,24 @@ public class UserController {
         return "hello";
     }
     @RequestMapping("/admin/user")
-    public String getUserPage(Model model) {
-        List<User> lstUsers = userService.getAllUsers();
-        model.addAttribute("Model_users", lstUsers);
+    public String getUserPage(Model model, @RequestParam("page") Optional<String> OptionalPage) {
+        int page = 1;
+        try {
+            if(OptionalPage.isPresent()){
+                page = Integer.parseInt(OptionalPage.get());
+            }
+            else{
+                //
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        Pageable pageable = PageRequest.of(page-1, 4);
+        Page<User> lstUsers = userService.getAllUsers(pageable);
+        List<User> lst = lstUsers.getContent();
+        model.addAttribute("Model_users", lst);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", lstUsers.getTotalPages());
         return "admin/user/show";
     }
     @RequestMapping("/admin/user/{id}")
