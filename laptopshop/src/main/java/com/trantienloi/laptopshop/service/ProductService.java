@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.trantienloi.laptopshop.domain.Cart;
@@ -12,6 +13,7 @@ import com.trantienloi.laptopshop.domain.CartDetail;
 import com.trantienloi.laptopshop.domain.Order;
 import com.trantienloi.laptopshop.domain.OrderDetail;
 import com.trantienloi.laptopshop.domain.Product;
+import com.trantienloi.laptopshop.domain.Product_;
 import com.trantienloi.laptopshop.domain.User;
 import com.trantienloi.laptopshop.repository.CartDetailRepository;
 import com.trantienloi.laptopshop.repository.CartRepository;
@@ -45,8 +47,13 @@ public class ProductService {
     public Product saveProduct(Product product){
         return productRepository.save(product);
     }
-    public Page<Product> getAllProducts(Pageable pageable){
-        return this.productRepository.findAll(pageable);
+    private Specification<Product> nameLike(String name){
+        return (root, query, criteriaBuilder) 
+            -> criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
+        }
+
+    public Page<Product> getAllProducts(Pageable pageable, String name){
+        return this.productRepository.findAll(this.nameLike(name), pageable);
     }
     public Product getProductById(long id){
         return productRepository.findById(id);
