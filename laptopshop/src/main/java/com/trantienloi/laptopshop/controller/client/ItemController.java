@@ -3,7 +3,7 @@ package com.trantienloi.laptopshop.controller.client;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.ArrayList;
+import java.util.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,7 +48,11 @@ public class ItemController {
     @GetMapping("/products")
     public String getPoducts(Model model ,
                             @RequestParam("page") Optional<String> OptionalPage,
-                            @RequestParam("name") Optional<String> nameOptional) {
+                            @RequestParam("name") Optional<String> nameOptional,
+                            @RequestParam("min-price") Optional<String> minOptional,
+                            @RequestParam("max-price") Optional<String> maxOptional,
+                            @RequestParam("factory") Optional<String> facOptional,
+                            @RequestParam("price") Optional<String> prOptional) {
         int page = 1;
         try {
             if(OptionalPage.isPresent()){
@@ -57,9 +61,36 @@ public class ItemController {
         } catch (Exception e) {
             // TODO: handle exception
         }
-        String name = nameOptional.get();
-        Pageable pageable = PageRequest.of(page-1, 6);
-        Page<Product> lstProducts = this.productService.getAllProducts(pageable, name);
+        
+        Pageable pageable = PageRequest.of(page-1, 60);
+
+        //case0 name like
+
+        // String name = nameOptional.isPresent() ? nameOptional.get() : "";
+        // Page<Product> lstProducts = this.productService.getAllProductsWithSpec(pageable, name);
+
+        //case1 min price
+        // Double min = minOptional.isPresent() ? Double.parseDouble(minOptional.get()) : 0;
+        // Page<Product> lstProducts = this.productService.getAllProductsWithSpec(pageable, min);
+
+        //case2 max price
+        // Double max = maxOptional.isPresent() ? Double.parseDouble(maxOptional.get()) : 100000000;
+        // Page<Product> lstProducts = this.productService.getAllProductsWithSpec(pageable, max);
+
+        //case3 factory equal
+        String factory = facOptional.isPresent() ? facOptional.get() : "";
+        Page<Product> lstProducts = this.productService.getAllProductsWithSpec(pageable, factory);
+
+        // case 4 factory 
+        // List<String> factory = Arrays.asList(facOptional.get().split(","));
+        // Page<Product> lstProducts = this.productService.getAllProductsWithSpec(pageable,factory);
+
+        //case5 min <= price <= max
+        // String price = prOptional.isPresent() ? prOptional.get() : "";
+        // Page<Product> lstProducts = this.productService.getAllProductsWithSpec(pageable, price);
+
+
+
         List<Product> product = lstProducts.getContent();
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", lstProducts.getTotalPages());
