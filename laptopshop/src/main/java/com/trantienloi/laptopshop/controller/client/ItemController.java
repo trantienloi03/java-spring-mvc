@@ -1,13 +1,12 @@
 package com.trantienloi.laptopshop.controller.client;
 
 
-import java.util.List;
-import java.util.Optional;
 import java.util.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.trantienloi.laptopshop.domain.Cart;
 import com.trantienloi.laptopshop.domain.CartDetail;
 import com.trantienloi.laptopshop.domain.Product;
+import com.trantienloi.laptopshop.domain.Product_;
 import com.trantienloi.laptopshop.domain.User;
+import com.trantienloi.laptopshop.domain.dto.ProductCriteriaDTO;
 import com.trantienloi.laptopshop.service.ProductService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,26 +47,30 @@ public class ItemController {
         return "client/product/detail";
     }
     @GetMapping("/products")
-    public String getPoducts(Model model ,
-                            @RequestParam("page") Optional<String> OptionalPage,
-                            @RequestParam("name") Optional<String> nameOptional,
-                            @RequestParam("min-price") Optional<String> minOptional,
-                            @RequestParam("max-price") Optional<String> maxOptional,
-                            @RequestParam("factory") Optional<String> facOptional,
-                            @RequestParam("price") Optional<String> prOptional) {
+    public String getPoducts(Model model ,ProductCriteriaDTO productCriteriaDTO, HttpServletRequest request) {
         int page = 1;
         try {
-            if(OptionalPage.isPresent()){
-                page = Integer.parseInt(OptionalPage.get());
+            if(productCriteriaDTO.getPage().isPresent()){
+                page = Integer.parseInt(productCriteriaDTO.getPage().get());
             }
         } catch (Exception e) {
             // TODO: handle exception
         }
+        Pageable pageable = PageRequest.of(page-1, 3);
+        if(productCriteriaDTO.getSort() != null && productCriteriaDTO.getSort().isPresent()){
+            String sort = productCriteriaDTO.getSort().get();
+            if(sort.equals("gia-tang-dan")){
+                 pageable = PageRequest.of(page-1, 3, Sort.by(Product_.PRICE).ascending());
+            }
+            else if(sort.equals("gia-giam-dan")){
+                 pageable = PageRequest.of(page-1, 3, Sort.by(Product_.PRICE).descending());
+            }else{
+                pageable = PageRequest.of(page-1, 3);
+            }
+        }
         
-        Pageable pageable = PageRequest.of(page-1, 60);
-
+        Page<Product> lstProducts = this.productService.getAllProductsWithSpec(productCriteriaDTO ,pageable);
         //case0 name like
-
         // String name = nameOptional.isPresent() ? nameOptional.get() : "";
         // Page<Product> lstProducts = this.productService.getAllProductsWithSpec(pageable, name);
 
@@ -78,8 +83,8 @@ public class ItemController {
         // Page<Product> lstProducts = this.productService.getAllProductsWithSpec(pageable, max);
 
         //case3 factory equal
-        String factory = facOptional.isPresent() ? facOptional.get() : "";
-        Page<Product> lstProducts = this.productService.getAllProductsWithSpec(pageable, factory);
+        // String factory = facOptional.isPresent() ? facOptional.get() : "";
+        // Page<Product> lstProducts = this.productService.getAllProductsWithSpec(pageable, factory);
 
         // case 4 factory 
         // List<String> factory = Arrays.asList(facOptional.get().split(","));
@@ -89,12 +94,19 @@ public class ItemController {
         // String price = prOptional.isPresent() ? prOptional.get() : "";
         // Page<Product> lstProducts = this.productService.getAllProductsWithSpec(pageable, price);
 
-
-
+        //case6
+        // List<String> price = Arrays.asList(prOptional.get().split(","));
+        // Page<Product> lstProducts = this.productService.getAllProductsWithSpec(pageable,price);
+        String qs = request.getQueryString();
+        if (qs != null && !qs.isBlank()) {
+            // remove page
+            qs = qs.replace("page=" + page, "");
+        }
         List<Product> product = lstProducts.getContent();
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", lstProducts.getTotalPages());
         model.addAttribute("products", product);
+        model.addAttribute("queryString", qs);
         return "client/product/show";
     }
     @PostMapping("/add-product-to-cart/{id}")
