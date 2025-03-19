@@ -2,6 +2,7 @@ package com.trantienloi.laptopshop.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -232,7 +233,7 @@ public class ProductService {
        }
 
     }
-    public void handlePlaceOrder(User user, HttpSession session, String receiverName, String receiverAddress, String receiverPhone){
+    public void handlePlaceOrder(User user, HttpSession session, String receiverName, String receiverAddress, String receiverPhone, String paymentMethod, String uuid){
         // create order
         Order order = new Order();
         order.setUser(user);
@@ -240,6 +241,10 @@ public class ProductService {
         order.setReceiverAddress(receiverAddress);
         order.setReceiverPhone(receiverPhone);
         order.setStatus("PENDING");
+        order.setPaymentMethod(paymentMethod);
+        order.setPaymentStatus("PAYMENT_UNPAID");
+        // final String uuid = UUID.randomUUID().toString().replace("-", "");
+        order.setPaymentRef(!paymentMethod.equals("COD") ? uuid : "UNKNOWN");
         // order = this.orderRepository.save(order);
         Cart cart = this.cartRepository.findByUser(user);
         double sum = 0;

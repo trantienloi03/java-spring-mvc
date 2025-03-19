@@ -1,6 +1,7 @@
 package com.trantienloi.laptopshop.controller.client;
 
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import com.trantienloi.laptopshop.domain.Product_;
 import com.trantienloi.laptopshop.domain.User;
 import com.trantienloi.laptopshop.domain.dto.ProductCriteriaDTO;
 import com.trantienloi.laptopshop.service.ProductService;
+import com.trantienloi.laptopshop.service.VNPayService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -37,8 +39,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ItemController {
     private final ProductService productService;
-    public ItemController(ProductService productService){
+    private final VNPayService vNPayService;
+    public ItemController(ProductService productService, VNPayService vNPayService){
         this.productService = productService;
+        this.vNPayService = vNPayService;
     }
     @GetMapping("/product/{id}")
     public String getMethodName(Model model ,@PathVariable long id) {
@@ -172,12 +176,22 @@ public class ItemController {
     public String handlePlaceOrder(HttpServletRequest request,
                                     @RequestParam("receiverName") String receiverName,
                                     @RequestParam("receiverAddress") String receiverAddress,
-                                    @RequestParam("receiverPhone") String receiverPhone) {
+                                    @RequestParam("receiverPhone") String receiverPhone,
+                                    @RequestParam("paymentMethod") String paymentMethod,
+                                    @RequestParam("totalPrice") String totalPrice) throws UnsupportedEncodingException{
             HttpSession session = request.getSession(false);
             User user = new User();
             long id = (Long)session.getAttribute("id");
             user.setId(id);
-            this.productService.handlePlaceOrder(user, session, receiverName, receiverAddress, receiverPhone);
+            final String uuid = UUID.randomUUID().toString().replace("-", ""); //truyen len cho vnpay
+            this.productService.handlePlaceOrder(user, session, receiverName, receiverAddress, receiverPhone, paymentMethod, uuid);
+            if(!paymentMethod.equals("COD")){
+                String ip = this.vNPayService.getIpAddress(request);
+                String vnpUrl = this.vNPayService.generateVNPayURL(Double.parseDouble(totalPrice), uuid, ip);
+    
+                return "redirect:" + vnpUrl;
+            }
+            this.productService.handlePlaceOrder(user, session, receiverName, receiverAddress, receiverPhone, paymentMethod, uuid);
         return "redirect:/thanks";
                                     }
     @GetMapping("/thanks")
