@@ -235,32 +235,80 @@ public class ProductService {
     }
     public void handlePlaceOrder(User user, HttpSession session, String receiverName, String receiverAddress, String receiverPhone, String paymentMethod, String uuid){
         // create order
-        Order order = new Order();
-        order.setUser(user);
-        order.setReceiverName(receiverName);
-        order.setReceiverAddress(receiverAddress);
-        order.setReceiverPhone(receiverPhone);
-        order.setStatus("PENDING");
-        order.setPaymentMethod(paymentMethod);
-        order.setPaymentStatus("PAYMENT_UNPAID");
-        // final String uuid = UUID.randomUUID().toString().replace("-", "");
-        order.setPaymentRef(!paymentMethod.equals("COD") ? uuid : "UNKNOWN");
+        // Order order = new Order();
+        // order.setUser(user);
+        // order.setReceiverName(receiverName);
+        // order.setReceiverAddress(receiverAddress);
+        // order.setReceiverPhone(receiverPhone);
+        // order.setStatus("PENDING");
+        // order.setPaymentMethod(paymentMethod);
+        // order.setPaymentStatus("PAYMENT_UNPAID");
+        // // final String uuid = UUID.randomUUID().toString().replace("-", "");
+        // order.setPaymentRef(!paymentMethod.equals("COD") ? uuid : "UNKNOWN");
+        // // order = this.orderRepository.save(order);
+        // Cart cart = this.cartRepository.findByUser(user);
+        // double sum = 0;
+        // for (CartDetail cd : cart.getCartDetails()) {
+        //     sum += cd.getPrice() * cd.getQuantity();
+        // }
+        // order.setTotalPrice(sum);
         // order = this.orderRepository.save(order);
-        Cart cart = this.cartRepository.findByUser(user);
-        double sum = 0;
-        for (CartDetail cd : cart.getCartDetails()) {
-            sum += cd.getPrice() * cd.getQuantity();
-        }
-        order.setTotalPrice(sum);
-        order = this.orderRepository.save(order);
-        // create orderDetail
+        // // create orderDetail
 
-        // step 1: get cart by user
+        // // step 1: get cart by user
       
+        // if (cart != null) {
+        //     List<CartDetail> cartDetails = cart.getCartDetails();
+
+        //     if (cartDetails != null) {
+        //         for (CartDetail cd : cartDetails) {
+        //             OrderDetail orderDetail = new OrderDetail();
+        //             orderDetail.setOrder(order);
+        //             orderDetail.setProduct(cd.getProduct());
+        //             orderDetail.setPrice(cd.getPrice());
+        //             orderDetail.setQuantity(cd.getQuantity());
+
+        //             this.orderDetailRepository.save(orderDetail);
+        //         }
+
+        //         // step 2: delete cart_detail and cart
+        //         for (CartDetail cd : cartDetails) {
+        //             this.cartDetailRepository.deleteById(cd.getId());
+        //         }
+
+        //         this.cartRepository.deleteById(cart.getId());
+
+        //         // step 3 : update session
+        //         session.setAttribute("sum", 0);
+        //     }
+        // }
+        Cart cart = this.cartRepository.findByUser(user);
         if (cart != null) {
             List<CartDetail> cartDetails = cart.getCartDetails();
 
             if (cartDetails != null) {
+
+                // create order
+                Order order = new Order();
+                order.setUser(user);
+                order.setReceiverName(receiverName);
+                order.setReceiverAddress(receiverAddress);
+                order.setReceiverPhone(receiverPhone);
+                order.setStatus("PENDING");
+
+                order.setPaymentMethod(paymentMethod);
+                order.setPaymentStatus("PAYMENT_UNPAID");
+                order.setPaymentRef(paymentMethod.equals("COD") ? "UNKNOWN" : uuid);
+
+                double sum = 0;
+                for (CartDetail cd : cartDetails) {
+                    sum += cd.getPrice();
+                }
+                order.setTotalPrice(sum);
+                order = this.orderRepository.save(order);
+
+                // create orderDetail
+
                 for (CartDetail cd : cartDetails) {
                     OrderDetail orderDetail = new OrderDetail();
                     orderDetail.setOrder(order);
@@ -281,6 +329,14 @@ public class ProductService {
                 // step 3 : update session
                 session.setAttribute("sum", 0);
             }
+        }
+    }
+    public void updatePaymentStatus(String paymentRef, String status){
+        Optional<Order> optional = this.orderRepository.findByPaymentRef(paymentRef);
+        if(optional.isPresent()){
+            Order order = optional.get();
+            order.setPaymentStatus(status);
+            this.orderRepository.save(order);
         }
     }
 }

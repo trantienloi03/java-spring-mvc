@@ -185,17 +185,24 @@ public class ItemController {
             user.setId(id);
             final String uuid = UUID.randomUUID().toString().replace("-", ""); //truyen len cho vnpay
             this.productService.handlePlaceOrder(user, session, receiverName, receiverAddress, receiverPhone, paymentMethod, uuid);
+            this.productService.handlePlaceOrder(user, session, receiverName, receiverAddress, receiverPhone, paymentMethod, uuid);
             if(!paymentMethod.equals("COD")){
                 String ip = this.vNPayService.getIpAddress(request);
                 String vnpUrl = this.vNPayService.generateVNPayURL(Double.parseDouble(totalPrice), uuid, ip);
     
                 return "redirect:" + vnpUrl;
             }
-            this.productService.handlePlaceOrder(user, session, receiverName, receiverAddress, receiverPhone, paymentMethod, uuid);
+            
         return "redirect:/thanks";
                                     }
     @GetMapping("/thanks")
-    public String thanks(){
+    public String thanks(Model model,
+                         @RequestParam("vnp_ResponseCode") Optional<String> code,
+                         @RequestParam("vnp_TxnRef")Optional<String> ref ){
+        if(code.isPresent() && ref.isPresent()){
+            String paymentStatus = code.get().equals("00") ? "PAYMENT_SUCCESS" : "PAYMENT_FAIL";
+            this.productService.updatePaymentStatus(ref.get(), paymentStatus);
+        }
         return "client/cart/thanks";
     }
     @PostMapping("/add-product-from-view-detail")
