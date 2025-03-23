@@ -1,6 +1,6 @@
 # java-spring-mvc
 laptopshop
-Backend: (Java)
+Backend: Java
 
 - Spring Boot : bootstrapping project
 
